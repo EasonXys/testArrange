@@ -10,13 +10,6 @@
         </li>
       </ul>
     </template>
-
-    <!-- <template #monthCellRender="{ current }">
-      <div v-if="getMonthData(current)" class="notes-month">
-        <section>{{ getMonthData(current) }}</section>
-        <span>Backlog number</span>
-      </div>
-    </template> -->
   </a-calendar>
 </template>
 <script setup lang="ts">
@@ -42,8 +35,8 @@ const getListData = (value: Dayjs) => {
   let listData;
   listData = sch?.map(item => {
     let [stime, etime] = item.timeRange
-    const range = stime.format('hh:mm') +
-      '-' + etime.format('hh:mm')
+    const range = stime.format('HH:mm') +
+      '-' + etime.format('HH:mm')
     if (stime.isSame(value, 'day')) {
       return {
         type: 'success',

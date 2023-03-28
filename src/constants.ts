@@ -1,6 +1,7 @@
 import { Dayjs } from 'dayjs'
 export enum EnumOperationType {
-  Create = 0,
+  None = -1,
+  Create,
   Edit,
   Delete
 }

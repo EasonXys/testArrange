@@ -13,6 +13,7 @@
       "ESNext",
       "DOM"
     ],
+    "allowJs": true,
     "skipLibCheck": true,
     "noEmit": true,
   },
