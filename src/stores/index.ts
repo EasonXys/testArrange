@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { IFormState, EnumOperationType } from '../constants'
-import { getSeletedDMY } from '../utils'
+import { getSeletedTime } from '../utils'
 import dayjs, { Dayjs } from 'dayjs'
 import { useStorage } from '@vueuse/core'
 import { nanoid } from 'nanoid'
@@ -85,9 +85,8 @@ export const useStore = defineStore('arrange', {
       const stime = timeRange[0]
       const etime = timeRange[1]
 
-      const { date, month, year } = getSeletedDMY(this.selectedDate)
-      let stime_new = stime.date(date).month(month).year(year)
-      let etime_new = etime.date(date).month(month).year(year)
+      let stime_new = getSeletedTime(this.selectedDate, stime)
+      let etime_new = getSeletedTime(this.selectedDate, etime)
       data.timeRange = [stime_new, etime_new]
       data.id = nanoid()
       this.schedule = [...this.schedule, data]

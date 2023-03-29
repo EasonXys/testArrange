@@ -19,6 +19,7 @@ import 'dayjs/locale/zh-cn';
 import { useStore } from '../stores';
 import { storeToRefs } from 'pinia'
 import { cloneDeep } from 'lodash-es'
+import { IFormState } from '../constants';
 
 dayjs.locale('zh-cn');
 const store = useStore()
@@ -30,7 +31,11 @@ const handleSelect = (date: Dayjs) => {
   store.getSelectedDate(date)
 }
 const getListData = (value: Dayjs) => {
-  const sch = cloneDeep(schedule.value)
+  const sch = cloneDeep(schedule.value).sort((a: IFormState, b: IFormState) => {
+    const astime = a.timeRange[0].hour()
+    const bstime = b.timeRange[0].hour()
+    return astime - bstime
+  })
 
   let listData;
   listData = sch?.map(item => {
@@ -52,13 +57,26 @@ const getListData = (value: Dayjs) => {
 };
 
 </script>
-<style >
+<style lang="scss">
 .calendar__container {
-  padding: 30px;
   border: 1px solid #eee;
   border-bottom: none;
   box-shadow: -10px -10px 10px #eee;
   width: 70%;
+
+  .ant-radio-group {
+    // display: none;
+    visibility: hidden;
+  }
+
+  .ant-picker-content {
+    th {
+      color: #1990ff;
+      font-weight: bolder;
+    }
+  }
+
+
 
 }
 
