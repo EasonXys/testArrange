@@ -19,5 +19,6 @@ import Setting from '../components/Setting.vue'
   border: 1px solid #eee;
   height: 100vh;
   align-items: center;
+
 }
 </style>

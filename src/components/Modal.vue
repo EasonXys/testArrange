@@ -1,8 +1,7 @@
 <template>
   <div class="modal__container">
-    <a-modal v-model:visible="props.showModal" :title="modalTitle" @ok="handleOk" :closable="false">
-      <a-form name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" @finish="handleFinish"
-        @finishFailed="handleFailed" :model="formState" ref="formRef">
+    <a-modal v-model:visible="isModalShow" :title="modalTitle" @ok="handleOk" :closable="false">
+      <a-form name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" :model="formState" ref="formRef">
         <a-form-item label="备注" name="course">
           <a-input v-model:value="formState.course" />
         </a-form-item>
@@ -19,8 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount } from 'vue';
-import { Form } from 'ant-design-vue';
+import { onBeforeUnmount, watch } from 'vue';
+import { Form, Modal } from 'ant-design-vue';
 import dayjs, { Dayjs } from 'dayjs';
 import { defineProps, computed, ref, reactive, toRaw } from "vue"
 import { EnumOperationType, operationMap, IFormState } from "../constants";
@@ -30,22 +29,12 @@ import { cloneDeep } from 'lodash-es'
 
 const store = useStore()
 const formRef = ref()
-
-const props = defineProps({
-  showModal: {
-    type: Boolean,
-  },
-  operationType: {
-    type: Number,
-    required: true
-  }
-})
+const { modalStatus, isModalShow, needChangeSchedule } = storeToRefs(store)
 
 let formState = reactive({} as IFormState);
 
-const emit = defineEmits(['closeModal'])
 const modalTitle = computed(() => {
-  return operationMap.get(props.operationType) + '时间段'
+  return operationMap.get(modalStatus.value) + '时间段'
 })
 
 const getDisabledTime = () => {
@@ -58,21 +47,37 @@ const handleOk = (e: any) => {
   e.preventDefault();
   e.stopPropagation();
   formRef.value.validate().then(() => {
-    store.addSchedule(cloneDeep(formState))
+    if (modalStatus.value === EnumOperationType.Create) {
+      store.addSchedule(cloneDeep(formState))
+    } else {
+      return new Promise((resolve) => {
+        Modal.confirm({
+          title: () => '确认更改吗',
+          onOk() {
+            store.editSchedule(cloneDeep(formState))
+            resolve(true)
+          },
+          onCancel() {
+            resolve(true)
+          },
+        });
+      })
+    }
   }).then(() => {
-    emit('closeModal')
+    store.closeModal()
     formRef.value.resetFields();
   })
 
 
 }
-const handleFinish = (values: any) => {
-}
-const handleFailed = (values: any, errorFields: any, outOfDate: any) => {
-}
 const handleCancel = () => {
-  emit('closeModal')
+  store.closeModal()
 }
+watch(() => isModalShow.value, (newVal) => {
+  if (modalStatus.value === EnumOperationType.Edit && needChangeSchedule && newVal) {
+    formState = reactive(cloneDeep(needChangeSchedule.value))
+  }
+})
 
 
 </script>

@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     AModal: typeof import('ant-design-vue/es')['Modal']
     ATimeRangePicker: typeof import('ant-design-vue/es')['TimeRangePicker']
     Calendar: typeof import('./src/components/Calendar.vue')['default']
+    Clock: typeof import('./src/components/Clock.vue')['default']
     CourseList: typeof import('./src/components/CourseList.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Modal: typeof import('./src/components/Modal.vue')['default']

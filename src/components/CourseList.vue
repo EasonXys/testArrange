@@ -3,8 +3,8 @@
     <template #renderItem="{ item }">
       <a-list-item>
         <template #actions>
-          <a class="list__edit" @click="doEdit(item)">更改</a>
-          <a class="list__delete" @click="doDelete(item)">删除</a>
+          <a class="list__edit" @click="handleEdit(item)">更改</a>
+          <a class="list__delete" @click="handleDelete(item)">删除</a>
         </template>
         <span>{{ getTimeRangeStr(item.timeRange) }}</span>
         <span>{{ item.course }}</span>
@@ -18,25 +18,34 @@ import { ref, computed } from 'vue'
 import { useStore } from '../stores'
 import { storeToRefs } from 'pinia';
 import { Dayjs } from 'dayjs';
-import { IFormState } from '../constants';
+import { EnumOperationType, IFormState } from '../constants';
+import { Modal } from 'ant-design-vue';
 
 const store = useStore()
 const { selectedSchedule } = storeToRefs(store);
 
-const emit = defineEmits(['handleEdit'])
-
-
-const doEdit = (item: IFormState) => {
-  console.log(item)
-  emit('handleEdit')
-}
-const doDelete = (item: IFormState) => {
-}
 
 const getTimeRangeStr = (timeRange: [Dayjs, Dayjs]) => {
   const [stime, etime] = timeRange;
-  return stime.format('hh:mm') + '-' + etime.format('hh:mm')
+  return stime.format('HH:mm') + '-' + etime.format('HH:mm')
 }
+const handleEdit = (item: IFormState) => {
+  store.showModal(EnumOperationType.Edit)
+  store.getNeedChangeSchedule(item)
+
+}
+const handleDelete = (item: IFormState) => {
+  Modal.confirm({
+    title: () => '确认删除吗',
+    onOk() {
+      console.log('ok')
+      store.deleteSchedule(item)
+    },
+    onCancel() {
+    },
+  });
+}
+
 
 </script>
 <style scoped>
