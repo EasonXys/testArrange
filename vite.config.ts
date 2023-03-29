@@ -6,7 +6,8 @@ import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 import legacy from '@vitejs/plugin-legacy';
 
 export default defineConfig({
-  base: './',
+  // base: './',
+  base: '/testArrange/',
   plugins: [
     vue(),
     legacy({
