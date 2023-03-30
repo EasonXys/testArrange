@@ -30,7 +30,7 @@ import { storeToRefs } from 'pinia';
 import { IFormState } from '../constants';
 import isBetween from 'dayjs/plugin/isBetween'
 const now = ref(dayjs())
-const timer1 = ref<NodeJS.Timer | null>(null)
+const timer1 = ref<number>(0)
 dayjs.extend(isBetween)
 
 const store = useStore()
@@ -55,13 +55,13 @@ const getIsDot = (item: IFormState) => {
   return now.value.isBetween(item.timeRange[0], item.timeRange[1], 'minute', '[]')
 }
 onMounted(() => {
-  timer1.value = setInterval(() => {
+  timer1.value = window.setInterval(() => {
     now.value = dayjs()
     console.log(now.value.format())
   }, 60000)
 })
 onBeforeUnmount(() => {
-  clearInterval(Number(timer1.value))
+  clearInterval(timer1.value)
 })
 
 </script>
